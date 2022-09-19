@@ -77,7 +77,7 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
     }
   }
   function gpListener(e: CustomEvent<gpEventType>) {
-    const { pressed, activeZone } = e.detail
+    const { pressed } = e.detail
     // if (activeZone === zone) {
     //   if(pressed.includes(12) || pressed.includes(51)) { //up
     //   } else if (pressed.includes(13) || pressed.includes(61)) {

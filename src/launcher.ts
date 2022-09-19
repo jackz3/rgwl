@@ -69,10 +69,10 @@ function run () {
         window.Module['callMain'](window.Module['arguments']);
         window.Module['resumeMainLoop']()
         // document.getElementById('canvas').focus()
-        // setTimeout(() => {
-        //   window.Module.canvas.style.width = '80%'
-        //   window.Module.canvas.style.height = 'auto'
-        // }, 1000)
+        setTimeout(() => {
+          window.Module.canvas.style.width = 'auto'
+          window.Module.canvas.style.height = '80%'
+        }, 1000)
       })
     })
   }
@@ -148,9 +148,9 @@ window['exitToApp'] = () => {
     setTimeout(parent.window.exitGame, 600)
     clearInterval(gpInterval)
   }, 50)
-  if (document.fullscreenElement) {
-    document.exitFullscreen()
-  }
+  // if (document.fullscreenElement) {
+  //   document.exitFullscreen()
+  // }
 }
 
 function hideBar() {

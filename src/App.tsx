@@ -1,4 +1,4 @@
-import { onCleanup, onMount, createSignal, Suspense, Show } from 'solid-js';
+import { onCleanup, onMount, createSignal, Suspense, Show, For } from 'solid-js';
 import { createStore } from "solid-js/store";
 import type { Component } from 'solid-js';
 import * as bootstrap from 'bootstrap';
@@ -8,7 +8,7 @@ import SettingsModal from './SettingsModal'
 import { SelectedGame, Platforms, showToast, toastTxt, setShowToast } from './common';
 import logoImg from './images/retroarch-96x96.png'
 import { gpEventType, setActiveZone, startpolling } from './gamepad'
-import { Toast } from 'solid-bootstrap';
+import { Modal, Toast } from 'solid-bootstrap';
 
 
 const [gameRunning, setGameRunning] = createSignal(false)
@@ -20,13 +20,23 @@ function selectGame(game: string) {
   setSelGame({ ...selGame, game })
 }
 
-window.exitGame = function() {
+window.exitGame = function () {
   setGameRunning(false)
   startpolling()
 }
 
 const App: Component = () => {
   const [showSettings, setShowSettings] = createSignal(false)
+  const [showHelp, setShowHelp] = createSignal(false)
+
+  const ShortCuts = [
+    ['L2+START', 'toggle retroarch menu'],
+    ['L1+START', 'toggle launcher bar'],
+    ['L2+SELECT', 'toggle fullscreen'],
+    ['L1+START', 'exit game'],
+    ['R2+SELECT', 'save state'],
+    ['R2+START', 'load state']
+  ]
   function setActiveItem() {
     let hash = window.location.hash;
 
@@ -65,6 +75,7 @@ const App: Component = () => {
       document.getElementById('settings').click()
     }
   }
+
   onMount(() => {
     document.addEventListener('gpEvent', gpListener)
     setActiveItem();
@@ -83,12 +94,12 @@ const App: Component = () => {
             <img src={logoImg} alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
             <a class="navbar-brand" href="#">Retro Game Web Launcher</a>
             <div class="collapse navbar-collapse justify-content-end pe-3">
-              <a class="btn btn-light" target="_blank" href="https://github.com/" role="button">Github</a>
-              <button type="button" class="btn btn-link">Help</button>
+              <a class="btn btn-light" target="_blank" href="https://github.com/jackz3/rgwlauncher" role="button">Github</a>
+              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-link">Help</button>
               <button id="settings" class="btn btn-outline-success ms-3" type="submit" onClick={() => {
                 setShowSettings(true)
                 setActiveZone('ModalSettings')
-               }}>Settings</button>
+              }}>Settings</button>
             </div>
           </div>
         </nav>
@@ -113,9 +124,22 @@ const App: Component = () => {
         autohide
       >
         <Toast.Body>
-        {toastTxt()}
+          {toastTxt()}
         </Toast.Body>
       </Toast>
+      <Modal show={showHelp()} onHide={() => setShowHelp(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Help</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Gamepad shortcuts when playing</h5>
+          <dl class="row">
+            <For each={ShortCuts}>
+              {(s, i) => <><dt class="col-sm-3">{s[0]}</dt><dd class="col-sm-9">{s[1]}</dd></>}
+            </For>
+          </dl>
+        </Modal.Body>
+      </Modal>
       <iframe classList={{ 'd-none': !gameRunning() }} style={{ position: 'fixed', top: 0, width: '100%', height: '100vh' }} src="./launcher.html"></iframe>
     </>
   );
