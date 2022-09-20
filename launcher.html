@@ -23,6 +23,7 @@
       position: fixed;
       top: 0;
       left: 0;
+      display: none;
     }
 
     .btn {
@@ -56,6 +57,7 @@
       <button class="btn" onclick="keyPress('F2')">SaveState</button>
       <button class="btn" onclick="keyPress('F4')">LoadState</button>
     </div>
+    <button class="btn" style="display: none" id="play" onclick="playGame()">Loading core ...</button>
     <canvas id="canvas" tabindex="1" onContextMenu="event.preventDefault()"></canvas>
   </div>
   <script type="module" src="/src/launcher.ts"></script>

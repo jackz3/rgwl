@@ -29,7 +29,6 @@ export function loadScript(source: string, callback: Function, async = true, def
 export function initModule () {
   window.Module = {
     noInitialRun: true,
-    // arguments: ["-v", "--menu"],
     arguments: ["/home/web_user/retroarch/userdata/content/downloads/"],
     preRun: [],
     postRun: [function() {
@@ -54,25 +53,23 @@ export function initModule () {
   }
 }
 
+let loaded = false
 function run () {
   loadStroe()
   const { game, platform, core } = localData.save.selectedGame
   if (!game || !platform || !core)  return
   initModule()
-  window.Module.arguments = [`/home/web_user/retroarch/userdata/content/downloads/${game}`],
+  window.Module.arguments = ['-v', `/home/web_user/retroarch/userdata/content/downloads/${game}`],
+  // window.Module.arguments = ["-v", "--menu"],
+  // window.Module.arguments = [`/home/web_user/retroarch/userdata/content/downloads/${game}`],
   window.Module.onRuntimeInitialized = () => {
-    console.log('runtime inited')
+    document.getElementById('play').textContent = 'Load game ...'
     loadGame(platform, game, (memFs) => {
-      console.log('game fs ok')
+      document.getElementById('play').textContent = 'Load retroarch files ...'
       initRetroFs(memFs, () => {
-        console.log('retro fs ok')
-        window.Module['callMain'](window.Module['arguments']);
-        window.Module['resumeMainLoop']()
-        // document.getElementById('canvas').focus()
-        setTimeout(() => {
-          window.Module.canvas.style.width = 'auto'
-          window.Module.canvas.style.height = '80%'
-        }, 1000)
+        document.getElementById('play').textContent = 'Play (A)'
+        loaded = true
+        window['playGame']()
       })
     })
   }
@@ -151,6 +148,19 @@ window['exitToApp'] = () => {
   // if (document.fullscreenElement) {
   //   document.exitFullscreen()
   // }
+}
+
+window['playGame'] = function() {
+  if (!loaded) return
+  window.Module['callMain'](window.Module['arguments']);
+  window.Module['resumeMainLoop']();
+  // document.getElementById('canvas').focus()
+  setTimeout(() => {
+    window.Module.canvas.style.width = 'auto';
+    window.Module.canvas.style.height = '80%';
+    document.getElementById('bar').style.display = 'block';
+  }, 500);
+  document.getElementById('play').style.display = 'none'
 }
 
 function hideBar() {

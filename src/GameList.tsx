@@ -34,6 +34,7 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
   const [files, { mutate, refetch }] = createResource(dir, readDir)
   createEffect(() => {
     setDir(props.selGame.platform)
+    setCursor(0)
   })
   function gpListener(e: CustomEvent<gpEventType>) {
     const { pressed } = e.detail
@@ -44,7 +45,7 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
         cursorIncrease(cursor, setCursor, files().length)
       } else if (pressed.includes('A')) {
         selectGame(files()[cursor()])
-      } else if (pressed.includes('AX1LT') || pressed.includes('B')) {
+      } else if (pressed.includes('AX1LT') || pressed.includes('LT') || pressed.includes('B')) {
         setActiveZone('PlatformList')
       }
 

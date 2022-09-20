@@ -49,7 +49,7 @@ export default function LocalFiles(props: { show: boolean }) {
               (dir, i) => {
                 const name = dir === '' ? 'root' : dir
                 return <li class={"breadcrumb-item"} classList={{ 'active': i() === dirs().length - 1}}>
-                 {i() === dirs().length - 1 ? name : <a onClick={() => {
+                 {i() === dirs().length - 1 ? name : <a class="link-primary" onClick={() => {
                   const path = dirs().slice(0, i() + 1).join('/')
                   setCurDir(path ? path : '/')
                  }}>{name}</a>}

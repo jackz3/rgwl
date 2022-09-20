@@ -8,7 +8,7 @@ import SettingsModal from './SettingsModal'
 import { SelectedGame, Platforms, showToast, toastTxt, setShowToast } from './common';
 import logoImg from './images/retroarch-96x96.png'
 import { gpEventType, setActiveZone, startpolling } from './gamepad'
-import { Modal, Toast } from 'solid-bootstrap';
+import { Modal, Toast, ToastContainer } from 'solid-bootstrap';
 
 
 const [gameRunning, setGameRunning] = createSignal(false)
@@ -94,8 +94,8 @@ const App: Component = () => {
             <img src={logoImg} alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
             <a class="navbar-brand" href="#">Retro Game Web Launcher</a>
             <div class="collapse navbar-collapse justify-content-end pe-3">
-              <a class="btn btn-light" target="_blank" href="https://github.com/jackz3/rgwlauncher" role="button">Github</a>
-              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-link">Help</button>
+              <a class="btn btn-link" target="_blank" href="https://github.com/jackz3/rgwlauncher" role="button">Github</a>
+              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-light">Help</button>
               <button id="settings" class="btn btn-outline-success ms-3" type="submit" onClick={() => {
                 setShowSettings(true)
                 setActiveZone('ModalSettings')
@@ -104,8 +104,8 @@ const App: Component = () => {
           </div>
         </nav>
       </header>
-      <div class="container-fluid py-3 px-4" classList={{ 'd-none': gameRunning() }}>
-        <div class="row">
+      <div class="container-fluid py-3 px-4" classList={{ 'd-none': gameRunning() }} style={{ height: 'calc(100vh - 56px)' }}>
+        <div class="row h-100">
           <div class="position-relative col-5">
             <PlatformList selGame={selGame} setSelGame={setSelGame} />
           </div>
@@ -118,7 +118,8 @@ const App: Component = () => {
       <Show when={showSettings()} >
         <SettingsModal show={showSettings()} setShowSettings={setShowSettings} />
       </Show>
-      <Toast onClose={() => setShowToast(false)} bg='light' class="w-50"
+      <ToastContainer class="w-50" position='bottom-start'>
+      <Toast onClose={() => setShowToast(false)} bg='light' class="w-100" 
         show={showToast()}
         delay={2000}
         autohide
@@ -127,6 +128,7 @@ const App: Component = () => {
           {toastTxt()}
         </Toast.Body>
       </Toast>
+      </ToastContainer>
       <Modal show={showHelp()} onHide={() => setShowHelp(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Help</Modal.Title>

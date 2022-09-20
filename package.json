@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "xhrfs": "cd public/assets/frontend/bundle && make_xhrfs_index > .index-xhr"
   },
   "license": "MIT",
   "devDependencies": {

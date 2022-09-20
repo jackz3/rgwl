@@ -55,7 +55,7 @@ export function OneDriveUploader(props: { show: boolean, onHide: () => void, pla
                   paths().map((path, i, pas) => {
                     const name = path === '' ? 'Root' : path
                     return <li class={"breadcrumb-item" + (i === (pas.length - 1) ? ' active' : '')}>
-                      {i === pas.length - 1 ? name : <a onClick={() => setCurDir(pas.slice(0, i + 1).join('/'))}>{name}</a>}
+                      {i === pas.length - 1 ? name : <a class="link-primary" onClick={() => setCurDir(pas.slice(0, i + 1).join('/'))}>{name}</a>}
                     </li>
                   })
                 }
@@ -81,7 +81,7 @@ export function OneDriveUploader(props: { show: boolean, onHide: () => void, pla
                     (file, i) => <tr>
                       <td>
                         {
-                          !file().folder && <input checked={selFiles().includes(i)} class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" />
+                          !file().folder && <input checked={selFiles().includes(i)} class="form-check-input" type="checkbox" id="checkboxNoLabel" onClick={() => selectFile(i)} />
                         }
                       </td>
                       <td onClick={() => {
@@ -89,14 +89,7 @@ export function OneDriveUploader(props: { show: boolean, onHide: () => void, pla
                           setCurDir(`${curDir()}/${file().name}`)
                           setSelFiles([])
                         } else {
-                          const sFiles = selFiles()
-                          const idx = sFiles.indexOf(i)
-                          if (idx >= 0) {
-                            sFiles.splice(idx, 1)
-                          } else {
-                            sFiles.push(i)
-                          }
-                          setSelFiles([...sFiles])
+                          selectFile(i)
                         }
                       }}>{file().folder ? '[Folder]' : '[File]'}{file().name}</td>
                     </tr>
@@ -134,4 +127,15 @@ export function OneDriveUploader(props: { show: boolean, onHide: () => void, pla
         </Modal.Footer>
       </Modal>
   )
+
+  function selectFile(i: number) {
+    const sFiles = selFiles();
+    const idx = sFiles.indexOf(i);
+    if (idx >= 0) {
+      sFiles.splice(idx, 1);
+    } else {
+      sFiles.push(i);
+    }
+    setSelFiles([...sFiles]);
+  }
 }

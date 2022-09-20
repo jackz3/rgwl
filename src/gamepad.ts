@@ -31,15 +31,17 @@ type Zone = 'PlatformList' | 'GameList' | 'ModalSettings'
 let preActiveZone: Zone = 'PlatformList'
 export const [activeZone, setActiveZn] = createSignal<Zone>('PlatformList')
 export function setActiveZone(name: Zone) {
-  preActiveZone = activeZone()
-  setActiveZn(name)
+  setTimeout(() => {
+    preActiveZone = activeZone()
+    setActiveZn(name)
+  }, 0)
 }
 export function backToPreZone() {
   setActiveZn(preActiveZone)
 }
 
 let gpInterval
-const gpButtonStates: GamepadButton[][] = []
+const gpPressedStates: boolean[][] = []
 const gpAxeStates: number[][] = []
 const threhold = 0.9
 
@@ -58,10 +60,10 @@ function pollGamepads() {
     if (gp) {
       const pressed: number[] = []
       for (let j = 0; j < gp.buttons.length; j++) {
-        if (gp.buttons[j].pressed && gp.buttons[j].pressed !== gpButtonStates[i][j].pressed) {
+        if (gp.buttons[j].pressed && gp.buttons[j].pressed !== gpPressedStates[i][j]) {
           pressed.push(j)
         }
-        gpButtonStates[i][j] = gp.buttons[j]
+        gpPressedStates[i][j] = gp.buttons[j].pressed
       }
       for (let j = 0; j < gp.axes.length; j++) {
         if (gp.axes[j] > threhold && gpAxeStates[i][j] < threhold) {
@@ -73,6 +75,7 @@ function pollGamepads() {
         gpAxeStates[i][j] = gp.axes[j]
       }
       if (pressed.length) {
+        console.log(pressed)
         let evtType = 'gpEvent'
         if (activeZone().indexOf('Modal') === 0) {
           evtType = 'modalGpEvent'
@@ -92,7 +95,7 @@ window.addEventListener("gamepadconnected", function(e) {
     if (gp) {
       setGamepadMode(true)
       showInfo(`gamepad ${gp.id} connected`)
-      gpButtonStates.push([...gamepads[i].buttons])
+      gpPressedStates.push([...gamepads[i].buttons.map(x => x.pressed)])
       gpAxeStates.push([...gamepads[i].axes])
     }
   }
