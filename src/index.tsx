@@ -17,4 +17,3 @@ initFs().then(() => {
 }).catch(err => {
   render(() => <div>{err}</div>, document.getElementById('root') as HTMLElement);
 })
-

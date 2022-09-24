@@ -1,8 +1,8 @@
-import { FileSystem, initialize, EmscriptenFS, BFSRequire, configure } from 'browserfs'
+import { FileSystem, initialize, EmscriptenFS, BFSRequire } from 'browserfs'
 import IndexedDBFileSystem from 'browserfs/dist/node/backend/IndexedDB'
 import InMemoryFileSystem from 'browserfs/dist/node/backend/InMemory'
 import { FileFlag } from 'browserfs/dist/node/core/file_flag'
-import FS, { FSModule } from 'browserfs/dist/node/core/FS'
+import { FSModule } from 'browserfs/dist/node/core/FS'
 import {arrayBuffer2Buffer } from 'browserfs/dist/node/core/util';
 import { SelectedGame } from './common'
 
@@ -14,26 +14,11 @@ export function loadGame(platform: string, game: string, cb: (memFs: InMemoryFil
       const fs = BFSRequire('fs')
       gamesFs.readFile(`/${platform}/${game}`, null, FileFlag.getFileFlag('r'), (err, buf) => {
         fs.writeFileSync(`/${game}`, buf)
-        console.log('games fs ok')
         cb(memFs)
       })
     })
   })
 }
-
-
-// export function initUserFs (cb = null) {
-//   FileSystem.IndexedDB.Create({ storeName: 'RetroArch'}, (e, idbfs) => {
-//     FileSystem.InMemory.Create({}, function(e, inMemory) {
-//       FileSystem.AsyncMirror.Create({
-//          sync: inMemory, async: idbfs
-//       }, function(e, amfs) {
-//         initialize(amfs)
-//         cb(amfs)
-//       })
-//     })
-//   })
-// }
 
 export function initRetroFs (gamesFs, cb = null) {
   FileSystem.IndexedDB.Create({ storeName: 'RetroArch'}, (e, idbfs) => {
@@ -71,15 +56,6 @@ export const localData: {
 } = {}
 
 export function initFs (): Promise<IndexedDBFileSystem> {
-  // return new Promise((resolve, reject) => {
-  //   FileSystem.IndexedDB.Create({ storeName: 'RetroGames'}, (err, idbfs) => {
-  //     if (err) reject(err)
-  //     initialize(idbfs)
-  //     window.Buffer = BFSRequire('buffer').Buffer
-  //     localData.gamesFs = BFSRequire('fs')
-  //     resolve(null)
-  //   })
-  // })
   return new Promise((resolve, reject) => {
     FileSystem.IndexedDB.Create({ storeName: 'RetroGames'}, (err, idbfs) => {
       initialize(idbfs)

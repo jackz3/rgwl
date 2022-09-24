@@ -49,10 +49,6 @@ export const Platforms: Platform[] = [
     cores: ['genesis_plus_gx']
   },
   // {
-  //   name: '32X',
-  //   cores: ['picodrive']
-  // },
-  // {
   //   name: 'pce',
   //   cores: ['mednafen_pce_fast']
   // },
@@ -87,4 +83,20 @@ export function showInfo(txt: string) {
     setShowToast(true)
     setToastTxt(txt)
   })
+}
+
+export interface SignalValue<T extends any> {
+  (): T
+  value: T
+}
+
+export const createSignalValue = <T extends any>(initValue: T) => {
+  const [signal, setSignal] = createSignal(initValue);
+  
+  const self = () => signal();
+
+  return Object.defineProperty(self, 'value', {
+    get: signal,
+    set: setSignal
+  }) as SignalValue<T>
 }

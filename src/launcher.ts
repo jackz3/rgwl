@@ -59,9 +59,8 @@ function run () {
   const { game, platform, core } = localData.save.selectedGame
   if (!game || !platform || !core)  return
   initModule()
-  window.Module.arguments = ['-v', `/home/web_user/retroarch/userdata/content/downloads/${game}`],
-  // window.Module.arguments = ["-v", "--menu"],
-  // window.Module.arguments = [`/home/web_user/retroarch/userdata/content/downloads/${game}`],
+  window.Module.arguments = navigator.userAgent.indexOf('Chrome') > 0 ?  ['-v', `/home/web_user/retroarch/userdata/content/downloads/${game}`] : ["-v", "--menu"]
+  // window.Module.arguments = [`/home/web_user/retroarch/userdata/content/downloads/${game}`]
   window.Module.onRuntimeInitialized = () => {
     document.getElementById('play').textContent = 'Load game ...'
     loadGame(platform, game, (memFs) => {
@@ -120,10 +119,13 @@ if(location.search) {
     }
   })
   run()
+  window.onbeforeunload = function() {
+    return "Dude, are you sure you want to leave? Think of the kittens!";
+  }
 }
 
 const launcherEl = document.getElementById('launcher')
-window['fullScreen'] = () => {
+window['toggleFullScreen'] = () => {
   const elemBar = document.getElementById('bar');
   const dispStyle = getComputedStyle(elemBar)['display'];
   if (document.fullscreenElement) {
@@ -148,6 +150,7 @@ window['exitToApp'] = () => {
   // if (document.fullscreenElement) {
   //   document.exitFullscreen()
   // }
+  window.onbeforeunload = null
 }
 
 window['playGame'] = function() {
@@ -157,7 +160,7 @@ window['playGame'] = function() {
   // document.getElementById('canvas').focus()
   setTimeout(() => {
     window.Module.canvas.style.width = 'auto';
-    window.Module.canvas.style.height = '80%';
+    window.Module.canvas.style.height = '85%';
     document.getElementById('bar').style.display = 'block';
   }, 500);
   document.getElementById('play').style.display = 'none'
@@ -185,7 +188,7 @@ window['keyPress'] = keyPress
 const HotKeys: [number, number, number, string|Function][] = [
   [6, 9, 0, 'F1'],
   [4, 9, 0, hideBar],
-  [6, 8, 0, window['fullScreen']],
+  [6, 8, 0, window['toggleFullScreen']],
   [4, 8, 0, window['exitToApp']],
   [7, 8, 0, 'F2'],
   [7, 9, 0, 'F4'],
@@ -218,3 +221,4 @@ function pollGamepads() {
     }
   }
 }
+
