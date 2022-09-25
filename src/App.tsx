@@ -94,8 +94,8 @@ const App: Component = () => {
             <img src={logoImg} alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
             <a class="navbar-brand" href="#">Retro Game Web Launcher</a>
             <div class="collapse navbar-collapse justify-content-end pe-3">
-              <a class="btn btn-link" target="_blank" href="https://github.com/jackz3/rgwlauncher" role="button">Github</a>
-              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-light">Help</button>
+              <a class="btn" target="_blank" href="https://github.com/jackz3/rgwlauncher" role="button"><i class="bi-github" /></a>
+              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-light"><i class="bi bi-exclamation-circle"></i></button>
               <button id="settings" class="btn btn-outline-success ms-3" type="submit" onClick={() => {
                 setShowSettings(true)
                 setActiveZone('ModalSettings')

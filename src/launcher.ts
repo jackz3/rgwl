@@ -146,7 +146,7 @@ window['exitToApp'] = () => {
     keyPress('Escape')
     setTimeout(parent.window.exitGame, 600)
     clearInterval(gpInterval)
-  }, 50)
+  }, 80)
   // if (document.fullscreenElement) {
   //   document.exitFullscreen()
   // }
@@ -193,6 +193,7 @@ const HotKeys: [number, number, number, string|Function][] = [
   [7, 8, 0, 'F2'],
   [7, 9, 0, 'F4'],
 ]
+
 function pollGamepads() {
   const gamepads = navigator.getGamepads ? navigator.getGamepads() : []
   for (let i = 0; i < 1; i++) {
@@ -205,7 +206,6 @@ function pollGamepads() {
         }
       }
       if (pressed.length) {
-        console.log(pressed)
         HotKeys.forEach((x) => {
           const [k1, k2, ts, KeyOrFn] = x
           if ((ts + 600) < gp.timestamp && pressed.includes(k1) && pressed.includes(k2)) {
@@ -220,5 +220,7 @@ function pollGamepads() {
       }
     }
   }
+  const { jsHeapSizeLimit, totalJSHeapSize, usedJSHeapSize } = (window.performance as any).memory
+  document.getElementById('info').innerText = `${(jsHeapSizeLimit/1024/1024).toFixed(2)} ${(totalJSHeapSize/jsHeapSizeLimit).toFixed(4)} ${(usedJSHeapSize/totalJSHeapSize).toFixed(4)}`
 }
 

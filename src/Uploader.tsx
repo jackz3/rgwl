@@ -15,7 +15,7 @@ export const UploadFileButton: Component<{selGame: SelectedGame, refetch: Functi
 
 const Uploader: Component<{ selGame: SelectedGame, refetch: Function, showOneDrive: () => void }> = (props) => {
   return (
-    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+    <div class="d-flex flex-column align-items-center h-100" style={{ 'padding-top': '20%' }}>
       <UploadFileButton selGame={props.selGame} refetch={props.refetch} class="btn-lg w-25 mb-5" />
       <button type="button" class="btn btn-outline-primary btn-lg w-25" onClick={props.showOneDrive}>OneDrive</button>
     </div>

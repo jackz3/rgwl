@@ -92,7 +92,7 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
                       }
                     }
                   }}>{
-                      file.folder ? '[Folder]' : '[File]'
+                      file.folder ? <i class="bi bi-folder me-2" /> : null
                     }
                     {file.name}
                   </td>
