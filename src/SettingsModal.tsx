@@ -31,7 +31,7 @@ const Patches = [
   {
     key: 'joypad_autoconfig_dir',
     val: "~/retroarch/userdata/autoconfig",
-    disp: 'set gamepad cfg saving dir (must)'
+    disp: 'set gamepad cfg saving dir'
   },
   {
     key: ['input_enable_hotkey_btn', 'input_enable_hotkey_axis', 'input_menu_toggle','input_exit_emulator'],
