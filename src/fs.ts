@@ -30,7 +30,7 @@ export function initRetroFs (gamesFs, cb = null) {
         initialize(amfs)
         console.log('amfs ok')
 
-        FileSystem.XmlHttpRequest.Create({ index: "assets/frontend/bundle/.index-xhr" }, (e, xfs1) => {
+        FileSystem.XmlHttpRequest.Create({ index: "assets/frontend/bundle/index-xhr" }, (e, xfs1) => {
             FileSystem.MountableFileSystem.Create({
                 '/home/web_user/retroarch/userdata': amfs,
                 '/home/web_user/retroarch/bundle': xfs1,

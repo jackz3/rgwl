@@ -1,12 +1,12 @@
 {
   "name": "retro-game-weblauncher",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "xhrfs": "cd public/assets/frontend/bundle && make_xhrfs_index > .index-xhr"
+    "xhrfs": "cd public/assets/frontend/bundle && make_xhrfs_index > index-xhr"
   },
   "license": "MIT",
   "devDependencies": {

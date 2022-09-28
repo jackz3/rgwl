@@ -15,8 +15,8 @@ import { loadGame, initRetroFs, localData, loadStroe } from './fs';
 //   })
 // }
 export function loadScript(source: string, callback: Function, async = true, defer = true) {
-  var script = document.createElement('script');
-  var prior = document.getElementsByTagName('script')[0];
+  const script = document.createElement('script');
+  const prior = document.getElementsByTagName('script')[0];
   script.async = async
   script.defer = defer
   script.onload = function () {
@@ -66,7 +66,8 @@ function run () {
     loadGame(platform, game, (memFs) => {
       document.getElementById('play').textContent = 'Load retroarch files ...'
       initRetroFs(memFs, () => {
-        document.getElementById('play').textContent = 'Play (A)'
+        document.getElementById('play').style.display = 'none'
+        // document.getElementById('play').textContent = 'Play (A)'
         loaded = true
         window['playGame']()
       })
@@ -119,9 +120,6 @@ if(location.search) {
     }
   })
   run()
-  window.onbeforeunload = function() {
-    return "Dude, are you sure you want to leave? Think of the kittens!";
-  }
 }
 
 const launcherEl = document.getElementById('launcher')
@@ -155,6 +153,9 @@ window['exitToApp'] = () => {
 
 window['playGame'] = function() {
   if (!loaded) return
+  window.onbeforeunload = function() {
+    return "Dude, are you sure you want to leave?";
+  }
   window.Module['callMain'](window.Module['arguments']);
   window.Module['resumeMainLoop']();
   // document.getElementById('canvas').focus()

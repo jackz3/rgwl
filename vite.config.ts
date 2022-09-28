@@ -4,7 +4,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 import { resolve } from 'path'
 
 export default defineConfig({
-  base: 'rgwl/',
+  base: '/rgwl/',
   plugins: [solidPlugin(),
     basicSsl()
   ],
@@ -21,5 +21,6 @@ export default defineConfig({
       },
     },
     target: 'esnext',
+    outDir: '../pages/rgwl'
   },
 });
