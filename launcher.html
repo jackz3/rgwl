@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameLauncher</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+    }
+
+    #launcher {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    .btn {
+      -webkit-user-drag: none;
+      box-sizing: border-box;
+      cursor: pointer;
+      display: inline-block;
+      line-height: normal;
+      user-select: none;
+      vertical-align: middle;
+      white-space: nowrap;
+      border: transparent;
+      border-radius: 2px;
+      color: #fff;
+      font-size: 80%;
+      padding: 0.5em 1em;
+      text-decoration: none;
+      text-shadow: 0 1px 1px rgb(0 0 0 / 20%);
+      background: rgb(66, 184, 221);
+      margin: 0 4px 0 0;
+      width: 5.5rem;
+    }
+  </style>
+  <script type="module" crossorigin src="/rgwl/assets/launcher.13e9a858.js"></script>
+  <link rel="modulepreload" crossorigin href="/rgwl/assets/fs.7a2fe940.js">
+</head>
+
+<body>
+  <div id="launcher">
+    <div id="bar">
+      <button class="btn" onclick="toggleFullScreen()">FullScreen</button>
+      <button class="btn" onclick="exitToApp()">Exit</button>
+      <button class="btn" onclick="keyPress('F2')">SaveState</button>
+      <button class="btn" onclick="keyPress('F4')">LoadState</button>
+      <div id="info" style="color: white; display: inline-block;"></div>
+    </div>
+    <button class="btn" style="display: none" id="play" onclick="playGame()">Loading core ...</button>
+    <canvas id="canvas" tabindex="1" onContextMenu="event.preventDefault()"></canvas>
+  </div>
+  
+</body>
+
+</html>
