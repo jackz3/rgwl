@@ -5,6 +5,9 @@ Features
 - onedrive upload
 - improve loading speed
 - ease of use
+
+live sites: [cloudfare](https://rgwl.pages.dev) , [itch.io](https://jackz3.itch.io/rgwl) , [github pages](https://jackz3.github.io/rgwl/)
+
 ## Usage
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
