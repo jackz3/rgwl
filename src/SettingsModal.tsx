@@ -4,6 +4,7 @@ import { localData } from './fs'
 import LocalFiles from './LocalFils'
 import { backToPreZone, gpEventType } from './gamepad'
 import { cursorDecrease, cursorIncrease } from './common'
+import { logout } from './msgraph'
 
 function patchCfg(key: string[], val: string[]) {
   localData.localFs.readFile('/userdata/retroarch.cfg', 'utf8', (e, txt) => {
@@ -159,6 +160,9 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
           <button class="btn btn-outline-success m-3" type="submit" onClick={patch}>Patch</button>
         </div>
         <LocalFiles show={activeTab() === 'localFiles'} />
+        <div classList={{ 'd-none': activeTab() !== 'reset'}}>
+          <button class="btn btn-outline-success m-3" type="submit" onClick={() => logout()}>OneDrive Logout</button>
+        </div>
       </Modal.Body>
     </Modal>
   )

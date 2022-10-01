@@ -1,10 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import { resolve } from 'path'
 
+const envName = process.env.CFG ?? 'development'
+const modeEnv = loadEnv(envName, process.cwd())
+const base = modeEnv.VITE_BASE ?? ''
+
 export default defineConfig({
-  base: '/rgwl/',
+  base,
   plugins: [solidPlugin(),
     basicSsl()
   ],

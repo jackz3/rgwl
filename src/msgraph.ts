@@ -1,4 +1,5 @@
 import * as msal from "@azure/msal-browser";
+const LoginMode = import.meta.env['VITE_MSLOGIN']
 
 const msalConfig = {
   auth: {
@@ -54,7 +55,7 @@ function selectAccount () {
 export async function msLogin() {
   const loginRequest = {
     scopes: ['files.read.all'],// optional Array<string>
-    redirect_uri: window.location.href //'https://192.168.1.2:3000',
+    redirect_uri: import.meta.env.VITE_REDIRECT_URI ?? window.location.href
   }
   // if (account.accessToken) {
   //   return
@@ -63,20 +64,35 @@ export async function msLogin() {
     const currentAccount = msalInstance.getAccountByUsername(account.username)
     return msalInstance.acquireTokenSilent({...loginRequest, account: currentAccount }).then(resp => {
       setAccount(resp)
-    }).catch((err) => {
+    }).catch(async (err) => {
       if (err instanceof msal.InteractionRequiredAuthError) {
-        return msalInstance.acquireTokenRedirect({...loginRequest, loginHint: currentAccount.username });
+        if (LoginMode === 'popup') {
+          return msalInstance.acquireTokenPopup({...loginRequest, loginHint: currentAccount.username})
+        }
+        return msalInstance.acquireTokenRedirect({...loginRequest, loginHint: currentAccount.username});
       }
       throw err
     })
   } else {
-    return msalInstance.loginRedirect({...loginRequest });
+    if (LoginMode === 'popup') {
+      return msalInstance.loginPopup({...loginRequest }).then(handleResponse)
+    } else {
+      return msalInstance.loginRedirect({...loginRequest });
+    }
   }
 }
 
 export async function reqToken () {
   if (account.accessToken)  return
   return msLogin()
+}
+
+export async function logout() {
+  if (LoginMode === 'popup') {
+    return msalInstance.logoutPopup() 
+  } else {
+    return msalInstance.logoutRedirect()
+  }
 }
 
 function getHeaders() {

@@ -6,6 +6,8 @@ import { FSModule } from 'browserfs/dist/node/core/FS'
 import {arrayBuffer2Buffer } from 'browserfs/dist/node/core/util';
 import { SelectedGame } from './common'
 
+window.Buffer = BFSRequire('buffer').Buffer
+
 export function loadGame(platform: string, game: string, cb: (memFs: InMemoryFileSystem) => void) {
   FileSystem.InMemory.Create({}, function(e, memFs) {
     FileSystem.IndexedDB.Create({ storeName: 'RetroGames'}, (err, gamesFs) => {
@@ -26,14 +28,17 @@ export function initRetroFs (gamesFs, cb = null) {
       FileSystem.AsyncMirror.Create({
          sync: inMemory, async: idbfs
       }, function(e, amfs) {
-        console.log('err', e)
         initialize(amfs)
         console.log('amfs ok')
 
-        FileSystem.XmlHttpRequest.Create({ index: "assets/frontend/bundle/index-xhr" }, (e, xfs1) => {
+        // FileSystem.XmlHttpRequest.Create({ index: "assets/frontend/bundle/index-xhr" }, (e, xfs1) => {
+        fetch('assets/frontend/bundle.zip').then(res => res.arrayBuffer()).then(data => {
+          const zipData = Buffer.from(data)
+          FileSystem.ZipFS.Create({zipData}, (e, zipFs) => {
+            console.log('zip', e)
             FileSystem.MountableFileSystem.Create({
                 '/home/web_user/retroarch/userdata': amfs,
-                '/home/web_user/retroarch/bundle': xfs1,
+                '/home/web_user/retroarch/bundle': zipFs,
                 '/home/web_user/retroarch/userdata/content/downloads': gamesFs
             }, (e, mfs) => {
                 initialize(mfs)
@@ -43,6 +48,7 @@ export function initRetroFs (gamesFs, cb = null) {
                 cb && cb()
             })
           })
+        })
       })
     })
   })
@@ -67,7 +73,6 @@ export function initFs (): Promise<IndexedDBFileSystem> {
         }, (err, mfs) => {
           if (err) reject(err)
           initialize(mfs)
-          window.Buffer = BFSRequire('buffer').Buffer
           localData.localFs = BFSRequire('fs')
           resolve(null)
         })

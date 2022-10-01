@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "itch": "set CFG=itch&& vite build --mode itch",
     "serve": "vite preview",
     "xhrfs": "cd public/assets/frontend/bundle && make_xhrfs_index > index-xhr"
   },
