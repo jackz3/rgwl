@@ -5,6 +5,7 @@ import { selectFiles, ensureDir, saveGameFile } from './fs';
 import { reqToken, getList } from './msgraph';
 import { SelectedGame, createSignalValue } from './common';
 import FileBrowser from './FileBrowser';
+import { gpEventType } from './gamepad';
 
 export const UploadFileButton: Component<{selGame: SelectedGame, refetch: Function, class?: string}> = (props) => {
   return <>
@@ -32,10 +33,19 @@ async function readDir(path: string): Promise<any[]> {
 export function OneDriveUploader(props: { show: boolean, onHide: () => void, platform: string, refetch: Function })  {
   const cols = ['Select', 'File Name', 'Size']
   const [uploading, setUploading] = createSignal(false)
+
+  function gpListener(e: CustomEvent<gpEventType>) {
+    const { pressed } = e.detail
+    if (pressed.includes('B')) {
+      props.onHide()
+    }
+  }
   onMount(() => {
+    document.addEventListener('modalGpEvent', gpListener)
   })
 
   onCleanup(() => {
+    document.removeEventListener('modalGpEvent', gpListener)
   })
 
   const selFiles = createSignalValue([])

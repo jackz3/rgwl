@@ -62,9 +62,9 @@ function run () {
   window.Module.arguments = navigator.userAgent.indexOf('Chrome') > 0 ?  ['-v', `/home/web_user/retroarch/userdata/content/downloads/${game}`] : ["-v", "--menu"]
   // window.Module.arguments = [`/home/web_user/retroarch/userdata/content/downloads/${game}`]
   window.Module.onRuntimeInitialized = () => {
-    document.getElementById('play').textContent = 'Load game ...'
+    document.getElementById('play').textContent = 'Loading game ...'
     loadGame(platform, game, (memFs) => {
-      document.getElementById('play').textContent = 'Load retroarch files ...'
+      document.getElementById('play').textContent = 'Loading retroarch files ...'
       initRetroFs(memFs, () => {
         document.getElementById('play').style.display = 'none'
         // document.getElementById('play').textContent = 'Play (A)'
@@ -221,7 +221,7 @@ function pollGamepads() {
       }
     }
   }
-  const { jsHeapSizeLimit, totalJSHeapSize, usedJSHeapSize } = (window.performance as any).memory
-  document.getElementById('info').innerText = `${(jsHeapSizeLimit/1024/1024).toFixed(2)} ${(totalJSHeapSize/jsHeapSizeLimit).toFixed(4)} ${(usedJSHeapSize/totalJSHeapSize).toFixed(4)}`
+  // const { jsHeapSizeLimit, totalJSHeapSize, usedJSHeapSize } = (window.performance as any).memory
+  // document.getElementById('info').innerText = `${(totalJSHeapSize/jsHeapSizeLimit).toFixed(4)} , ${(usedJSHeapSize/totalJSHeapSize).toFixed(4)}`
 }
 

@@ -50,7 +50,7 @@ export const Platforms: Platform[] = [
   },
   // {
   //   name: 'pce',
-  //   cores: ['mednafen_pce_fast']
+  //   cores: ['4do', 'melonds', 'parallel_n64', 'mednafen_pce_fast']
   // },
   // {
   //   name: 'ngp',

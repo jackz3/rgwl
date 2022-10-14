@@ -3,7 +3,7 @@ import type { Component } from 'solid-js';
 import { delFile, localData, saveStore } from './fs';
 import { SelectedGame, cursorIncrease, cursorDecrease } from './common'
 import Uploader, { OneDriveUploader, UploadFileButton } from './Uploader'
-import { gpEventType, activeZone, setActiveZone, stopPolling, gamepadMode } from './gamepad';
+import { gpEventType, activeZone, setActiveZone, stopPolling, gamepadMode, backToPreZone } from './gamepad';
 
 async function readDir(platform: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -35,6 +35,11 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
   createEffect(() => {
     setDir(props.selGame.platform)
     setCursor(0)
+    if (show()) {
+      setActiveZone('ModalOneDrive')
+    } else {
+      backToPreZone()
+    }
   })
   function gpListener(e: CustomEvent<gpEventType>) {
     const { pressed } = e.detail

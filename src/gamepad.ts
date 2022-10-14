@@ -27,7 +27,7 @@ const ButtonMappings = {
   61: 'AX1DW'
 }
 
-type Zone = 'PlatformList' | 'GameList' | 'ModalSettings'
+type Zone = 'PlatformList' | 'GameList' | 'ModalSettings' | 'ModalOneDrive'
 let preActiveZone: Zone = 'PlatformList'
 export const [activeZone, setActiveZn] = createSignal<Zone>('PlatformList')
 export function setActiveZone(name: Zone) {

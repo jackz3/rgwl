@@ -1,5 +1,6 @@
-import { createSignal, createResource, For, Index, Show } from 'solid-js'
-import { SignalValue } from './common'
+import { createSignal, createResource, For, Show, onMount, onCleanup } from 'solid-js'
+import { cursorDecrease, cursorIncrease, SignalValue } from './common'
+import { gamepadMode, gpEventType } from './gamepad'
 
 export type FileStats = {
   name: string
@@ -10,8 +11,8 @@ export type FileStats = {
 
 export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>, readDir: (path: string) => Promise<FileStats[]>, delFile?: Function, cols: string[], selectAction?: Function }) {
   const { cols, delFile, readDir, selectAction, selFiles } = props
-
-  // const [selFiles, setSelFiles] = createSignal<FileStats[]>([])
+  const [cursor, setCursor] = createSignal(0)
+  let fbRef: HTMLDivElement
   const [curDir, setCurDir] = createSignal('/')
   let [files, { refetch }] = createResource(() => curDir(), readDir)
 
@@ -34,6 +35,41 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
     }
     selFiles.value = [...sFiles]
   }
+
+  function gpListener(e: CustomEvent<gpEventType>) {
+    const { pressed } = e.detail
+    if (pressed.includes('UP') || pressed.includes('AX1UP')) {
+      cursorDecrease(cursor, setCursor)
+      updateScrollbar()
+    }
+    if (pressed.includes('DW') || pressed.includes('AX1DW')) {
+      cursorIncrease(cursor, setCursor, files().length)
+      updateScrollbar()
+    }
+    if (pressed.includes('A')) {
+      clickItem(files()[cursor()])
+    }
+  }
+  function updateScrollbar() {
+    const total = files().length
+    const sHeight = fbRef.scrollHeight
+    const cHeight = fbRef.clientHeight
+    const pct = cHeight / sHeight
+    const idx = cursor()
+    const topPct = (idx + 1) / total - pct
+    if (topPct > 0) {
+      fbRef.scrollTop = topPct * sHeight
+    } else {
+      fbRef.scrollTop = 0
+    }
+  }
+  onMount(() => {
+    document.addEventListener('modalGpEvent', gpListener)
+  })
+
+  onCleanup(() => {
+    document.removeEventListener('modalGpEvent', gpListener)
+  })
 
   return (
     <>
@@ -62,8 +98,9 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
           </div>
         </div>
       }>
+        <div ref={fbRef} style={{ "max-height": '24rem', 'overflow-y': 'auto'}}>
         <table class="table table-hover">
-          <thead>
+          <thead style={{ 'position': 'sticky', 'top': 0, 'background-color': 'white' }}>
             <tr>
               <For each={cols}>
               {
@@ -75,22 +112,12 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
           <tbody>
             <For each={files()}>
               {
-                (file, i) => <tr>
+                (file, i) => <tr class="border-3" classList={{ 'border-start' : gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && i() === cursor() }}>
                   {
                     cols.includes('Select') ? <td>{ !file.folder && <input checked={selFiles().includes(file)} class="form-check-input" type="checkbox" onClick={() => selectFile(file)} /> }</td> : null
                   }
                   <td onClick={() => {
-                    if (file.folder) {
-                      setCurDir(`${curDir()}${curDir() === '/' ? '' : '/'}${file.name}`)
-                      selFiles.value = []
-                    } else {
-                      if (cols.includes('Select')) {
-                        selectFile(file)
-                      }
-                      if (selectAction) {
-                        selectAction(curDir(), file.name)
-                      }
-                    }
+                    clickItem(file)
                   }}>{
                       file.folder ? <i class="bi bi-folder me-2" /> : null
                     }
@@ -109,7 +136,24 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
             </For>
           </tbody>
         </table>
+        </div>
       </Show>
     </>
   )
+
+  function clickItem(file: FileStats) {
+    if (file.folder) {
+      setCurDir(`${curDir()}${curDir() === '/' ? '' : '/'}${file.name}`)
+      if (selFiles) {
+        selFiles.value = []
+      }
+    } else {
+      if (cols.includes('Select')) {
+        selectFile(file)
+      }
+      if (selectAction) {
+        selectAction(curDir(), file.name)
+      }
+    }
+  }
 }
