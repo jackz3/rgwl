@@ -16,6 +16,14 @@ export function loadGame(platform: string, game: string, cb: (memFs: InMemoryFil
       const fs = BFSRequire('fs')
       gamesFs.readFile(`/${platform}/${game}`, null, FileFlag.getFileFlag('r'), (err, buf) => {
         fs.writeFileSync(`/${game}`, buf)
+        if (platform === 'neogeo') {
+          gamesFs.readFile(`/${platform}/neogeo.zip`, null, FileFlag.getFileFlag('r'), (err, buf) => {
+            if (!err) {
+              fs.writeFileSync(`/neogeo.zip`, buf)
+            }
+            cb(memFs)
+          })
+        }
         cb(memFs)
       })
     })

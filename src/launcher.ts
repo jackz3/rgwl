@@ -144,7 +144,7 @@ window['exitToApp'] = () => {
     keyPress('Escape')
     setTimeout(parent.window.exitGame, 600)
     clearInterval(gpInterval)
-  }, 80)
+  }, 100)
   // if (document.fullscreenElement) {
   //   document.exitFullscreen()
   // }

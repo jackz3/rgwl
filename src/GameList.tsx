@@ -64,6 +64,7 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
   })
 
   const selectGame = (file: string) => {
+    if (file === 'neogeo.zip') return
     const selectedGame: SelectedGame = { ...props.selGame, game: file }
     saveStore({ selectedGame })
     document.querySelector("iframe").src = `launcher.html?${Date.now()}`
@@ -88,7 +89,7 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
           <tbody>
             <For each={files()}>{
               (file, i) => <tr class="border-4" classList={{ 'border-start' : gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && activeZone() === zone && i() === cursor() }}>
-                <td onClick={() => selectGame(file)}>{file}</td>
+                <td classList={ { 'pointer': file !== 'neogeo.zip', 'text-black-50': file === 'neogeo.zip' }} onClick={() => selectGame(file)}>{file}</td>
                 <td><button type="button" onClick={(e) => { delFile(`/${props.selGame.platform}/${file}`, () => refetch()) }} class="btn btn-outline-primary btn-sm">del</button></td></tr>
             }
             </For>

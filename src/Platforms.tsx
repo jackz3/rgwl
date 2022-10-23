@@ -36,7 +36,7 @@ const PlatformList: Component<{ selGame: SelectedGame, setSelGame: SetStoreFunct
     <ul class="list-group list-group-flush">
       <For each={platforms()}>{
         (p, i) => <li onClick={() => setSelGame({ platform: p.name, core: p.cores[0], game: '' })} class="list-group-item border-4" classList={{ 'border-start': gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && activeZone() === zone && i() === cursor() }}>
-          <div class="d-flex w-100 justify-content-between">
+          <div class="d-flex w-100 justify-content-between pointer">
             <h5 class="mb-1" classList={{ 'text-primary': props.selGame.platform === p.name }}>{p.name}</h5>
             {/* <small>{p.cores.join(' ')}</small> */}
           </div>
