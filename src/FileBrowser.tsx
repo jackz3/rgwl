@@ -116,7 +116,7 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
                   {
                     cols.includes('') ? <td>
                       <Show when={!file.folder} fallback={null}>
-                      <button class="btn btn-outline-scecondary btn-sm" onClick={() => { delLocalFile(`/${curDir()}/${file.name}`) }}>del</button>
+                      <button class="btn btn-sm btn-outline-secondary" onClick={() => { delLocalFile(`/${curDir()}/${file.name}`) }}><i class="bi bi-x-lg" /></button>
                       </Show>
                     </td> : null
                   }

@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "set CFG=pages&& vite build --mode pages",
     "itch": "set CFG=itch&& vite build --mode itch",
     "serve": "vite preview",
     "xhrfs": "cd public/assets/frontend/bundle && make_xhrfs_index > index-xhr"

@@ -78,7 +78,7 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
                 const isBios = BiosList.includes(file)
                 return <tr class="border-4" classList={{ 'border-start' : gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && activeZone() === zone && i() === cursor() }}>
                 <td classList={ { 'pointer': !isBios, 'text-black-50': isBios }} onClick={() => selectGame(file)}>{`${isBios ? '[bios]' : ''}${file}`}</td>
-                <td><button type="button" onClick={(e) => { delFile(`/${props.selGame.platform}/${file}`, () => refetch()) }} class="btn btn-outline-primary btn-sm">del</button></td></tr>
+                <td><button type="button" onClick={(e) => { delFile(`/${props.selGame.platform}/${file}`, () => refetch()) }} class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg" /></button></td></tr>
               } 
             }
             </For>
