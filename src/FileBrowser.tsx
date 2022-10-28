@@ -1,5 +1,5 @@
 import { createSignal, createResource, For, Show, onMount, onCleanup } from 'solid-js'
-import { cursorDecrease, cursorIncrease, SignalValue } from './common'
+import { createScrollbar, cursorDecrease, cursorIncrease, SignalValue } from './common'
 import { gamepadMode, gpEventType } from './gamepad'
 
 export type FileStats = {
@@ -15,6 +15,7 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
   let fbRef: HTMLDivElement
   const [curDir, setCurDir] = createSignal('/')
   let [files, { refetch }] = createResource(() => curDir(), readDir)
+  const updateScrollbar = createScrollbar(cursor, files)
 
   const dirs = () => {
     const ds = curDir().split('/')
@@ -40,29 +41,17 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
     const { pressed } = e.detail
     if (pressed.includes('UP') || pressed.includes('AX1UP')) {
       cursorDecrease(cursor, setCursor)
-      updateScrollbar()
+      updateScrollbar(fbRef)
     }
     if (pressed.includes('DW') || pressed.includes('AX1DW')) {
       cursorIncrease(cursor, setCursor, files().length)
-      updateScrollbar()
+      updateScrollbar(fbRef)
     }
     if (pressed.includes('A')) {
       clickItem(files()[cursor()])
     }
   }
-  function updateScrollbar() {
-    const total = files().length
-    const sHeight = fbRef.scrollHeight
-    const cHeight = fbRef.clientHeight
-    const pct = cHeight / sHeight
-    const idx = cursor()
-    const topPct = (idx + 1) / total - pct
-    if (topPct > 0) {
-      fbRef.scrollTop = topPct * sHeight
-    } else {
-      fbRef.scrollTop = 0
-    }
-  }
+
   onMount(() => {
     document.addEventListener('modalGpEvent', gpListener)
   })
@@ -98,7 +87,7 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
           </div>
         </div>
       }>
-        <div ref={fbRef} style={{ "max-height": '24rem', 'overflow-y': 'auto'}}>
+        <div ref={fbRef} style={{ "max-height": '24rem', 'overflow-y': 'auto' }}>
         <table class="table table-hover">
           <thead style={{ 'position': 'sticky', 'top': 0, 'background-color': 'white' }}>
             <tr>

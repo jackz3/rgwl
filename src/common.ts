@@ -1,4 +1,4 @@
-import { Accessor, batch, createSignal, Setter } from "solid-js"
+import { Accessor, batch, createSignal, Resource, Setter } from "solid-js"
 
 export type Platform = {
   name: string
@@ -11,6 +11,7 @@ export type SelectedGame = {
   game: string
 }
 
+export const BiosList = ['neogeo.zip', 'pgm.zip']
 export const Platforms: Platform[] = [
   {
     name: 'cps1',
@@ -99,4 +100,20 @@ export const createSignalValue = <T extends any>(initValue: T) => {
     get: signal,
     set: setSignal
   }) as SignalValue<T>
+}
+
+export function createScrollbar(cursor: Accessor<number>, files: Resource<any[]>) {
+  return function(ref: HTMLDivElement) {
+    const total = files().length
+    const sHeight = ref.scrollHeight
+    const cHeight = ref.clientHeight
+    const pct = cHeight / sHeight
+    const idx = cursor()
+    const topPct = (idx + 1) / total - pct
+    if (topPct > 0) {
+      ref.scrollTop = topPct * sHeight
+    } else {
+      ref.scrollTop = 0
+    }
+  }
 }

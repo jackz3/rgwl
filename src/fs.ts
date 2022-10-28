@@ -4,7 +4,7 @@ import InMemoryFileSystem from 'browserfs/dist/node/backend/InMemory'
 import { FileFlag } from 'browserfs/dist/node/core/file_flag'
 import { FSModule } from 'browserfs/dist/node/core/FS'
 import {arrayBuffer2Buffer } from 'browserfs/dist/node/core/util';
-import { SelectedGame } from './common'
+import { SelectedGame, BiosList } from './common'
 
 window.Buffer = BFSRequire('buffer').Buffer
 
@@ -16,15 +16,21 @@ export function loadGame(platform: string, game: string, cb: (memFs: InMemoryFil
       const fs = BFSRequire('fs')
       gamesFs.readFile(`/${platform}/${game}`, null, FileFlag.getFileFlag('r'), (err, buf) => {
         fs.writeFileSync(`/${game}`, buf)
+        let bios = []
         if (platform === 'neogeo') {
-          gamesFs.readFile(`/${platform}/neogeo.zip`, null, FileFlag.getFileFlag('r'), (err, buf) => {
-            if (!err) {
-              fs.writeFileSync(`/neogeo.zip`, buf)
-            }
-            cb(memFs)
-          })
+          bios = ['neogeo.zip']
         }
-        cb(memFs)
+        if (platform === 'mame' || platform === 'fbalpha2012') {
+          bios = BiosList
+        }
+        Promise.all(bios.map(b => new Promise((resolve, reject) => {
+          gamesFs.readFile(`/${platform}/${b}`, null, FileFlag.getFileFlag('r'), (err, buf) => {
+            if (!err) {
+              fs.writeFileSync(`/${b}`, buf)
+            }
+            resolve(null)
+          })
+        }))).then(() => cb(memFs))
       })
     })
   })
@@ -164,5 +170,25 @@ export function delFile(fileName: string, cb: Function) {
   localData.localFs.unlink(fileName, (err) => {
     if (err) throw err
     cb()
+  })
+}
+
+export async function readDir(dir: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    if (dir === '') {
+      resolve([])
+      return
+    }
+    localData.localFs.readdir(`/${dir}`, (err: any, fs) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          resolve([])
+        } else {
+          reject(err)
+        }
+      }
+      console.log('files', fs)
+      resolve(fs)
+    })
   })
 }
