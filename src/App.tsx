@@ -1,15 +1,12 @@
 import { onCleanup, onMount, createSignal, Suspense, Show, For } from 'solid-js';
 import { createStore } from "solid-js/store";
 import type { Component } from 'solid-js';
-import * as bootstrap from 'bootstrap';
 import GameList from './GameList'
 import PlatformList from './Platforms';
 import SettingsModal from './SettingsModal'
 import { SelectedGame, Platforms, showToast, toastTxt, setShowToast } from './common';
 import logoImg from './images/retroarch-96x96.png'
 import { gpEventType, setActiveZone, startpolling } from './gamepad'
-import { Modal, Toast, ToastContainer } from 'solid-bootstrap';
-
 
 const [gameRunning, setGameRunning] = createSignal(false)
 function prepareGameRunning() {
@@ -88,28 +85,26 @@ const App: Component = () => {
 
   return (
     <>
-      <header classList={{ 'd-none': gameRunning() }}>
-        <nav class="navbar navbar-expand-lg bg-light">
-          <div class="container-fluid">
-            <img src={logoImg} alt="Logo" width="30" height="24" class="d-inline-block align-text-top" />
-            <a class="navbar-brand" href="#">Retro Game Web Launcher</a>
-            <div class="collapse navbar-collapse justify-content-end pe-3">
-              <a class="btn btn-light" target="_blank" href="https://github.com/jackz3/rgwl" role="button"><i class="bi-github" /></a>
-              <button type="button" onClick={() => setShowHelp(true)} class="btn btn-light"><i class="bi bi-exclamation-circle"></i></button>
-              <button id="settings" class="btn btn-outline-success ms-3" type="submit" onClick={() => {
-                setShowSettings(true)
-                setActiveZone('ModalSettings')
-              }}>Settings</button>
-            </div>
-          </div>
-        </nav>
-      </header>
-      <div class="container-fluid py-3 px-4" classList={{ 'd-none': gameRunning() }} style={{ height: 'calc(100vh - 56px)' }}>
-        <div class="row h-100">
-          <div class="position-relative col-5">
+      <div class="navbar bg-base-200" classList={{ 'hidden': gameRunning() }}>
+        <div class="flex-1">
+          <img src={logoImg} alt="Logo" width="30" height="24" class='ml-4' />
+          <a class="btn btn-ghost normal-case text-lg">Retro Game Web Launcher</a>
+        </div>
+        <div class="flex-none">
+          <a class="btn btn-ghost btn-circle" target="_blank" href="https://github.com/jackz3/rgwl" role="button"><i class="bi-github" /></a>
+          <button type="button" onClick={() => setShowHelp(true)} class="btn btn-ghost btn-circle"><i class="bi bi-exclamation-circle"></i></button>
+          <button class="btn btn-outline btn-secondary" onclick={() => {
+            setShowSettings(true)
+            setActiveZone('ModalSettings')
+          }}>Settings</button>
+        </div>
+      </div>
+      <div class="flex flex-row py-3 px-4 flex-auto" classList={{ 'hidden': gameRunning() }}>
+        <div class="flex flex-row flex-1 h-full">
+          <div class="px-5 w-2/4">
             <PlatformList selGame={selGame} setSelGame={setSelGame} />
           </div>
-          <div class="position-relative col-7 border-start">
+          <div class="w-2/4 border-l-gray-200 border-l ml-4 pl-4">
             <GameList selGame={selGame} selectGame={selectGame} prepareGameRunning={prepareGameRunning} />
           </div>
         </div>
@@ -118,31 +113,29 @@ const App: Component = () => {
       <Show when={showSettings()} >
         <SettingsModal show={showSettings()} setShowSettings={setShowSettings} />
       </Show>
-      <ToastContainer class="w-50" position='bottom-start'>
-      <Toast onClose={() => setShowToast(false)} bg='light' class="w-100" 
-        show={showToast()}
-        delay={2000}
-        autohide
-      >
-        <Toast.Body>
-          {toastTxt()}
-        </Toast.Body>
-      </Toast>
-      </ToastContainer>
-      <Modal show={showHelp()} onHide={() => setShowHelp(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Help</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <div class="toast toast-bottom toast-start" classList={{ hidden: !showToast()}}>
+        <div class="alert alert-success">
+          <div>
+            <span>
+              {toastTxt()}
+            </span>
+          </div>
+        </div>
+      </div>
+      <input checked={showHelp()} type="checkbox" id="mymodal" class="modal-toggle" />
+      <div class="modal cursor-pointer">
+        <div class="modal-box relative">
+          <label class="btn btn-sm btn-circle absolute right-2 top-2" onclick={() => setShowHelp(false)}>✕</label>
+          <h3 class="font-bold text-lg">Help</h3>
           <h5>Gamepad shortcuts when playing</h5>
           <dl class="row">
             <For each={ShortCuts}>
               {(s, i) => <><dt class="col-sm-3">{s[0]}</dt><dd class="col-sm-9">{s[1]}</dd></>}
             </For>
           </dl>
-        </Modal.Body>
-      </Modal>
-      <iframe classList={{ 'd-none': !gameRunning() }} style={{ position: 'fixed', top: 0, width: '100%', height: '100vh' }} src="./launcher.html"></iframe>
+        </div>
+      </div>
+      <iframe classList={{ 'hidden': !gameRunning() }} class='fixed top-0 w-full h-screen' src="./launcher.html"></iframe>
     </>
   );
 }

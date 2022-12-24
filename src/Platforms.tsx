@@ -33,14 +33,21 @@ const PlatformList: Component<{ selGame: SelectedGame, setSelGame: SetStoreFunct
   })
 
   return (
-    <ul class="list-group list-group-flush">
+    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
       <For each={platforms()}>{
-        (p, i) => <li onClick={() => setSelGame({ platform: p.name, core: p.cores[0], game: '' })} class="list-group-item border-4" classList={{ 'border-start': gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && activeZone() === zone && i() === cursor() }}>
-          <div class="d-flex w-100 justify-content-between pointer">
-            <h5 class="mb-1" classList={{ 'text-primary': props.selGame.platform === p.name }}>{p.name}</h5>
-            {/* <small>{p.cores.join(' ')}</small> */}
+        (p, i) => <li onClick={() => setSelGame({ platform: p.name, core: p.cores[0], game: '' })} class="pb-2 sm:pb-3 hover:bg-gray-200" classList={{ 'bg-gray-100': gamepadMode() && i() === cursor(), 'bg-gray-200': gamepadMode() && activeZone() === zone && i() === cursor() }}>
+          <div class="flex items-center space-x-4 cursor-pointer">
+            <div class="flex-1">
+            <p class="h-10 flex flex-col justify-center font-semibold text-gray-900 truncate dark:text-white" classList={{ 'text-primary-focus': props.selGame.platform === p.name }}>
+              {p.name}
+            </p>
+            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+              cores: {p.cores.join(' ')}
+            </p>
+         </div>
+         <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+         </div>
           </div>
-          <small class="text-secondary">cores: {p.cores.join(' ')}</small>
         </li>
       }
       </For>

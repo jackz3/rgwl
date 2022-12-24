@@ -84,6 +84,7 @@ export function showInfo(txt: string) {
     setShowToast(true)
     setToastTxt(txt)
   })
+  setTimeout(() => setShowToast(false), 2000)
 }
 
 export interface SignalValue<T extends any> {

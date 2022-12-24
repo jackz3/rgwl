@@ -1,5 +1,4 @@
 import { createSignal, Setter, For, onMount, onCleanup, createEffect, on } from 'solid-js'
-import { Modal } from 'solid-bootstrap'
 import { localData } from './fs'
 import LocalFiles from './LocalFils'
 import { backToPreZone, gpEventType } from './gamepad'
@@ -35,7 +34,7 @@ const Patches = [
     disp: 'set gamepad cfg saving dir'
   },
   {
-    key: ['input_enable_hotkey_btn', 'input_enable_hotkey_axis', 'input_menu_toggle','input_exit_emulator'],
+    key: ['input_enable_hotkey_btn', 'input_enable_hotkey_axis', 'input_menu_toggle', 'input_exit_emulator'],
     val: ["nul", 'nul', 'f1', "escape"],
     disp: 'restore to default hotkeys'
   },
@@ -105,7 +104,7 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
     console.log('settings clean')
     document.removeEventListener('modalGpEvent', gpListener)
   })
-  
+
   const selectPatch = (i: number) => {
     const selPatches = sel()
     const idx = selPatches.indexOf(i)
@@ -118,7 +117,7 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
   }
   const patch = () => {
     sel().forEach(i => {
-      const {key, val} = Patches[i]
+      const { key, val } = Patches[i]
       if (Array.isArray(key) && Array.isArray(val)) {
         patchCfg(key, val)
       }
@@ -131,39 +130,37 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
     // props.setShowSettings(false)
   }
 
-  return (
-    <Modal show={props.show} onHide={() => closeModal()} size='lg'>
-      <Modal.Header closeButton>
-        <Modal.Title>Settings</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ul class="nav nav-tabs" onClick={(e) => setActiveTab((e.target as HTMLElement).dataset['tab'])}>
+  return <>
+    <input checked type="checkbox" class="modal-toggle" />
+    <div class="modal cursor-pointer">
+      <div class="modal-box relative w-10/12 max-w-5xl h-[50%]">
+        <label class="btn btn-sm btn-circle absolute right-2 top-2" onclick={() => closeModal()}>✕</label>
+        <h3 class="font-bold text-lg">Settings</h3>
+        <div class="tabs my-3" onClick={(e) => setActiveTab((e.target as HTMLElement).dataset['tab'])}>
           <For each={Tabs}>
-          {
-            (tab, i) => <li class="nav-item">
-            <a class="nav-link" classList={{ active: activeTab() === tab.key }} aria-current="page" data-tab={tab.key}>{tab.disp}</a>
-            </li> 
-          }
-          </For>
-        </ul>
-        <div classList={{ 'd-none': activeTab() !== 'patch' }}>
-          <For each={Patches}>
             {
-              (p, i) => <div class="form-check m-3">
-                <input onClick={() => selectPatch(i())} checked={sel().includes(i())} class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                <label class="form-check-label" for="flexCheckDefault">
-                  {p.disp}
-                </label>
-              </div>
+              (tab, i) => <a class="tab tab-bordered" classList={{ 'tab-active': activeTab() === tab.key }} aria-current="page" data-tab={tab.key}>{tab.disp}</a>
             }
           </For>
-          <button class="btn btn-outline-success m-3" type="submit" onClick={patch}>Patch</button>
+        </div>
+        <div class="form-control" classList={{ 'hidden': activeTab() !== 'patch' }}>
+          <For each={Patches}>
+            {
+              (p, i) => <label class="label cursor-pointer justify-start">
+                <input onClick={() => selectPatch(i())} checked={sel().includes(i())} class="checkbox mr-3" type="checkbox" value="" />
+                <span class="label-text">
+                  {p.disp}
+                </span>
+              </label>
+            }
+          </For>
+          <button class="btn btn-outline btn-success mt-3" type="submit" onClick={patch}>Patch</button>
         </div>
         <LocalFiles show={activeTab() === 'localFiles'} />
-        <div classList={{ 'd-none': activeTab() !== 'reset'}}>
-          <button class="btn btn-outline-success m-3" type="submit" onClick={() => logout()}>OneDrive Logout</button>
+        <div classList={{ 'hidden': activeTab() !== 'reset' }}>
+          <button class="btn btn-outline btn-success m-3" type="submit" onClick={() => logout()}>Logout OneDrive</button>
         </div>
-      </Modal.Body>
-    </Modal>
-  )
+      </div>
+    </div>
+  </>
 }

@@ -59,14 +59,14 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
   }
   return (
     <><Show when={!files.loading && files().length} fallback={<Uploader selGame={props.selGame} refetch={refetch} showOneDrive={() => setShow(true)} />}>
-      <div class="ps-3">
-        <div class="d-flex justify-content-end">
-          <UploadFileButton selGame={props.selGame} refetch={refetch} />
-          <button type="button" class="btn btn-outline-primary ms-4" onClick={() => setShow(true)}>OneDrive</button>
+      <div class="flex flex-col h-full">
+        <div class="flex justify-end pb-3">
+          <UploadFileButton selGame={props.selGame} refetch={refetch} class='w-28' />
+          <button type="button" class="btn btn-outline ml-4 w-28" onClick={() => setShow(true)}>OneDrive</button>
         </div>
-        <div ref={divRef} style={{ "overflow-y": 'auto', "max-height": 'calc(100vh - 110px)', "margin-right": '-20px' }}>
-        <table class="table table-hover">
-          <thead style={{ 'position': 'sticky', 'top': 0, 'background-color': 'white' }}>
+        <div ref={divRef} class='overflow-y-auto' style={{ "max-height": 'calc(100vh - 150px)' }}>
+        <table class="table max-h-full w-full">
+          <thead class='sticky top-0 bg-white'>
             <tr>
               <th scope="col">File Name</th>
               <th scope="col"></th>
@@ -76,9 +76,9 @@ const GameList: Component<{ selGame: SelectedGame, selectGame: Function, prepare
             <For each={files()}>{
               (file, i) => {
                 const isBios = BiosList.includes(file)
-                return <tr class="border-4" classList={{ 'border-start' : gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && activeZone() === zone && i() === cursor() }}>
-                <td classList={ { 'pointer': !isBios, 'text-black-50': isBios }} onClick={() => selectGame(file)}>{`${isBios ? '[bios]' : ''}${file}`}</td>
-                <td><button type="button" onClick={(e) => { delFile(`/${props.selGame.platform}/${file}`, () => refetch()) }} class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg" /></button></td></tr>
+                return <tr class="hover" classList={{ /*'bg-gray-200' : gamepadMode() && i() === cursor(),*/ 'active': gamepadMode() && activeZone() === zone && i() === cursor() }}>
+                <td classList={ { 'cursor-pointer': !isBios, 'text-gray-400': isBios }} onClick={() => !isBios && selectGame(file)}>{`${isBios ? '[bios]' : ''}${file}`}</td>
+                <td><button type="button" onClick={(e) => { delFile(`/${props.selGame.platform}/${file}`, () => refetch()) }} class="btn btn-outline btn-secondary btn-circle btn-sm"><i class="bi bi-x-lg" /></button></td></tr>
               } 
             }
             </For>

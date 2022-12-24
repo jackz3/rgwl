@@ -62,69 +62,66 @@ export default function FileBrowser(props: { selFiles?: SignalValue<FileStats[]>
 
   return (
     <>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb ms-2 mt-3">
-          <li class="me-2">PATH:</li>
+      <div class="text-sm breadcrumbs">
+        <ul >
+          <li class="">PATH:</li>
           <For each={dirs()}>
             {
               (dir, i) => {
                 const name = dir === '' ? 'root' : dir
-                return <li class={"breadcrumb-item"} classList={{ 'active': i() === dirs().length - 1}}>
-                 {i() === dirs().length - 1 ? name : <a class="link-primary" onClick={() => {
-                  const path = dirs().slice(0, i() + 1).join('/')
-                  setCurDir(path ? path : '/')
-                 }}>{name}</a>}
-               </li>
+                return <li class={"breadcrumb-item"} classList={{ 'active': i() === dirs().length - 1 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-2 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                  {i() === dirs().length - 1 ? name : <a class="link-primary" onClick={() => {
+                    const path = dirs().slice(0, i() + 1).join('/')
+                    setCurDir(path ? path : '/')
+                  }}>{name}</a>}
+                </li>
               }
             }
           </For>
-        </ol>
-      </nav>
+        </ul>
+      </div>
       <Show when={!files.loading} fallback={
-        <div class="d-flex justify-content-center">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
+        <progress class="progress w-56"></progress>
       }>
-        <div ref={fbRef} style={{ "max-height": '24rem', 'overflow-y': 'auto' }}>
-        <table class="table table-hover">
-          <thead style={{ 'position': 'sticky', 'top': 0, 'background-color': 'white' }}>
-            <tr>
-              <For each={cols}>
-              {
-                (cols, i) => <th scope='col'>{cols}</th>
-              }
-              </For>
-            </tr>
-          </thead>
-          <tbody>
-            <For each={files()}>
-              {
-                (file, i) => <tr class="border-3" classList={{ 'border-start' : gamepadMode() && i() === cursor(), 'border-success': gamepadMode() && i() === cursor() }}>
+        <div ref={fbRef} class="overflow-y-auto max-h-[95%]">
+          <table class="table w-[80%]">
+            <thead class="sticky top-0 bg-white">
+              <tr>
+                <For each={cols}>
                   {
-                    cols.includes('Select') ? <td>{ !file.folder && <input checked={selFiles().includes(file)} class="form-check-input" type="checkbox" onClick={() => selectFile(file)} /> }</td> : null
+                    (cols, i) => <th scope='col'>{cols}</th>
                   }
-                  <td onClick={() => {
-                    clickItem(file)
-                  }}>{
-                      file.folder ? <i class="bi bi-folder me-2" /> : null
+                </For>
+              </tr>
+            </thead>
+            <tbody>
+              <For each={files()}>
+                {
+                  (file, i) => <tr class="hover" classList={{ 'bg-gray-100': gamepadMode() && i() === cursor(), 'bg-gray-200': gamepadMode() && i() === cursor() }}>
+                    {
+                      cols.includes('Select') ? <td>{!file.folder && <input checked={selFiles().includes(file)} class="check" type="checkbox" onClick={() => selectFile(file)} />}</td> : null
                     }
-                    {file.name}
-                  </td>
-                  <td>{file.folder ? '' : file.size}</td>
-                  {
-                    cols.includes('') ? <td>
-                      <Show when={!file.folder} fallback={null}>
-                      <button class="btn btn-sm btn-outline-secondary" onClick={() => { delLocalFile(`/${curDir()}/${file.name}`) }}><i class="bi bi-x-lg" /></button>
-                      </Show>
-                    </td> : null
-                  }
-                </tr>
-              }
-            </For>
-          </tbody>
-        </table>
+                    <td onClick={() => {
+                      clickItem(file)
+                    }}>{
+                        file.folder ? <i class="bi bi-folder mr-1" /> : null
+                      }
+                      {file.name}
+                    </td>
+                    <td>{file.folder ? '' : file.size}</td>
+                    {
+                      cols.includes('') ? <td>
+                        <Show when={!file.folder} fallback={null}>
+                          <button class="btn btn-sm btn-outline btn-secondary" onClick={() => { delLocalFile(`/${curDir()}/${file.name}`) }}><i class="bi bi-x-lg" /></button>
+                        </Show>
+                      </td> : null
+                    }
+                  </tr>
+                }
+              </For>
+            </tbody>
+          </table>
         </div>
       </Show>
     </>

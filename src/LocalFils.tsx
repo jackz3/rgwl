@@ -27,7 +27,7 @@ async function readDir(path: string): Promise<FileStats[]> {
 
 export default function LocalFiles(props: { show: boolean }) {
   const cols = ['File Name', 'Size', '']
-  return <div classList={{ 'd-none': !props.show }}>
+  return <div classList={{ 'hidden': !props.show }} class='h-[85%]'>
     <FileBrowser {...{readDir, delFile, cols }} selectAction={(path: string, fileName: string) => downloadFile(path, fileName)} />
   </div>
 }
