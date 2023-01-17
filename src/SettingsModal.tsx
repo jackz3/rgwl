@@ -31,7 +31,7 @@ const Patches = [
   {
     key: 'joypad_autoconfig_dir',
     val: "~/retroarch/userdata/autoconfig",
-    disp: 'set gamepad cfg saving dir'
+    disp: 'set gamepad cfg saving dir. (must patch if using gamepad)'
   },
   {
     key: ['input_enable_hotkey_btn', 'input_enable_hotkey_axis', 'input_menu_toggle', 'input_exit_emulator'],
@@ -148,7 +148,7 @@ export default function SettingsModal(props: { show: boolean, setShowSettings: S
             {
               (p, i) => <label class="label cursor-pointer justify-start">
                 <input onClick={() => selectPatch(i())} checked={sel().includes(i())} class="checkbox mr-3" type="checkbox" value="" />
-                <span class="label-text">
+                <span class="label-text text-base">
                   {p.disp}
                 </span>
               </label>

@@ -93,7 +93,7 @@ const App: Component = () => {
         <div class="flex-none">
           <a class="btn btn-ghost btn-circle" target="_blank" href="https://github.com/jackz3/rgwl" role="button"><i class="bi-github" /></a>
           <button type="button" onClick={() => setShowHelp(true)} class="btn btn-ghost btn-circle"><i class="bi bi-exclamation-circle"></i></button>
-          <button class="btn btn-outline btn-secondary" onclick={() => {
+          <button class="btn btn-outline btn-secondary mr-2" onclick={() => {
             setShowSettings(true)
             setActiveZone('ModalSettings')
           }}>Settings</button>
